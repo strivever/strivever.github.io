@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://yoursite.com').hostname,
+    root: '/',
+    scheme: 'Muse',
+    version: '7.7.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="App端主要的就是UI的搭建，和数据的请求，然后将服务端的数据以精美的UI展示出来，通过这种方法将信息传递给普通用户。普通用户在App上进行操作，将用户行为和数据上传到服务端。所以当我们刚开始接触Flutter这一跨平台开发的时候首先可以先了解一下我们的Flutter UI的搭建。  为什么要学习Flutter？Flutter是Google的开源UI框架，Flutter生成的程序可以直接在Go">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flutter入门一">
+<meta property="og:url" content="http://yoursite.com/2020/01/17/Flutter%E5%85%A5%E9%97%A8%E4%B8%80/index.html">
+<meta property="og:site_name" content="我的小狗窝">
+<meta property="og:description" content="App端主要的就是UI的搭建，和数据的请求，然后将服务端的数据以精美的UI展示出来，通过这种方法将信息传递给普通用户。普通用户在App上进行操作，将用户行为和数据上传到服务端。所以当我们刚开始接触Flutter这一跨平台开发的时候首先可以先了解一下我们的Flutter UI的搭建。  为什么要学习Flutter？Flutter是Google的开源UI框架，Flutter生成的程序可以直接在Go">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1663049-01ce65fef4e9ad55.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1663049-4d275244a96824aa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1663049-0af2b88298f2a8bc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1663049-6830561ecad9f69a.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1663049-775d8bd76d667af7.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1663049-00b36dc72f9d491b.JPG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1663049-71ead7d9539aa30a.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1663049-c440cdedf9999b39.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1663049-85120103b6fd1724.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1663049-caf57a368df95da1.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1663049-f960b0f634337990.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1663049-90a83c6dd098e485.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1663049-5e3f97ad59bb6356.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1663049-70963db329fbd72c.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1663049-836cee12c573fe4e.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1663049-46edec6930efb6dd.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1663049-d669f3077e27713b.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="article:published_time" content="2020-01-17T07:53:58.000Z">
+<meta property="article:modified_time" content="2020-01-17T08:27:31.814Z">
+<meta property="article:author" content="Sea">
+<meta property="article:tag" content="Flutter">
+<meta property="article:tag" content="技术">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/1663049-01ce65fef4e9ad55.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+<link rel="canonical" href="http://yoursite.com/2020/01/17/Flutter%E5%85%A5%E9%97%A8%E4%B8%80/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Flutter入门一 | 我的小狗窝</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">我的小狗窝</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">记录生活，记录自己</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/17/Flutter%E5%85%A5%E9%97%A8%E4%B8%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Sea">
+      <meta itemprop="description" content="时刻保持一颗学习的心">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="我的小狗窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Flutter入门一
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-01-17 15:53:58 / 修改时间：16:27:31" itemprop="dateCreated datePublished" datetime="2020-01-17T15:53:58+08:00">2020-01-17</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <meta name="referrer" content="no-referrer">
+
+<p><strong>App端主要的就是UI的搭建，和数据的请求，然后将服务端的数据以精美的UI展示出来，通过这种方法将信息传递给普通用户。普通用户在App上进行操作，将用户行为和数据上传到服务端。所以当我们刚开始接触Flutter这一跨平台开发的时候首先可以先了解一下我们的Flutter UI的搭建。</strong></p>
+<hr>
+<h6 id="为什么要学习Flutter？"><a href="#为什么要学习Flutter？" class="headerlink" title="为什么要学习Flutter？"></a>为什么要学习Flutter？</h6><p><img src="https://upload-images.jianshu.io/upload_images/1663049-01ce65fef4e9ad55.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="why.jpg"><br>Flutter是Google的开源UI框架，Flutter生成的程序可以直接在Google最新的系统<code>Fuschia</code>上运行， 也可以build成<code>apk</code>在<code>android</code>上运行，或是生成<code>ipa</code>在<code>iOS</code>运行。</p>
+<p>一般传统的跨平台解决方案如RN，Weex等都是将程序员编写的代码自动转换成Native代码，最终渲染工作交还给系统，使用类HTML+JS的UI构建逻辑，但是最终会生成对应的自定义原生控件。<br>Flutter重写了一套跨平台的UI框架。渲染引擎依靠跨平台的Skia图形库来自己绘制。逻辑处理使用支持AOT的Dart语言，执行效率也比JS高很多。</p>
+<ul>
+<li>一. FlutterUI整体架构<br>跨平台应用的框架，没有使用WebView或者系统平台自带的控件，使用自身的高性能渲染引擎(Skia)自绘，界面开发语言使用dart，底层渲染引擎使用C, C++</li>
+</ul>
+<p><img src="https://upload-images.jianshu.io/upload_images/1663049-4d275244a96824aa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Flutter_image.png"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1663049-0af2b88298f2a8bc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="一脸懵逼.png"><br>我们可以看到最上层的<code>Material</code> 和<code>Cupertino</code>组件，这两个什么玩意呢。<br>其实很简单<code>Cupertino</code>库比蒂诺是硅谷核心城市之一，也是<a href="https://baike.baidu.com/item/%E8%8B%B9%E6%9E%9C%E5%85%AC%E5%8F%B8/304038" target="_blank" rel="noopener">苹果公司</a>的总部，这就很容易理解了，<code>Cupertino</code>库就是iOS风格的组件。<code>Material</code>当然就是安卓主流风格的组件了。</p>
+<p>从架构图可以看出，这两个组件库都是基于<code>Widget</code>实现的，可以看出这个<code>Widget</code>很基础，很重要啊。<img src="https://upload-images.jianshu.io/upload_images/1663049-6830561ecad9f69a.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Widget重点.jpeg"><br>Flutter设计思想是一切皆是Widget，包括UI基础控件，布局方式，手势等都是widget。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1663049-775d8bd76d667af7.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="常用的Widget.jpg"></p>
+<p>当我们新建一个Flutter工程之后，自带的demo示例如下图：<img src="https://upload-images.jianshu.io/upload_images/1663049-00b36dc72f9d491b.JPG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="IMG_6758.JPG"><br>看一下demo代码：<code>MaterialApp</code>包裹<code>MyHomePage</code>,<code>MyHomePage</code>包裹着<code>Scaffold</code>,<code>Scaffold</code>包裹着<code>AppBar</code>和<code>body</code>也可以增加<code>bottomNavigationBar</code>等。<img src="https://upload-images.jianshu.io/upload_images/1663049-71ead7d9539aa30a.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="AppDemo首页.jpg"><br><code>MaterialApp</code>继承StatefulWidget，放在Main 入口内函数中，初始化一个Material风格的App，一般配合Scaffold搭建AppUI架构。<br><code>Scaffold</code>系统封装好的脚手架，提供了设置顶部导航栏，底部导航栏，侧边栏。<br>App UI架构搭建完成之后，看一下基本UI组件的使用和组合。</p>
+<ul>
+<li>二.下面介绍一下Widget类：<br><code>abstract class Widget extends DiagnosticableTree{}</code>我们由此可知Widget是一个不能实例化的抽象类。系统实现的它的两个子类分别为<code>StatefulWidget</code>和<code>StatelessWidget</code>。<br><code>StatelessWidget</code>是无状态的控件，很简单，创建之后，被它包裹的Widget上边的数据就不在更新了，当然这个也不知绝对的，可以通过其他方法去更新StatelessWidget中Ui，这个以后再说。<br>StatefulWidget 这个是有状态的，创建StatefulWidget 同时必须创建对应的State类，构建UI就放在了State类里边，并且可以调用<code>setState(){}</code>函数去从新使用新的状态构建UI。所以在实际开发中，我们要根据具体需求，选择对应的Widget。可以使用StatelessWidget完成的，尽可能的不要用StatefulWidget 。下面举个例子： <img src="https://upload-images.jianshu.io/upload_images/1663049-c440cdedf9999b39.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image1.jpg"></li>
+</ul>
+<p>StatelessWidget：比如说在一些静态页面构建时，一旦UI构建之后便不需要再去更改UI，这时候可以使用StatelessWidget，比如一般App的关于我们页面。<br><img src="https://upload-images.jianshu.io/upload_images/1663049-85120103b6fd1724.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="demoLess.jpg"></p>
+<p>效果如下<img src="https://upload-images.jianshu.io/upload_images/1663049-caf57a368df95da1.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="demoLessUI.jpg"></p>
+<p>StatefulWidget ：我们构建的是动态页面，比如展示的数据是服务器返回来的，或者用户进行交互，需要更新UI斩杀的数据。新建工程自带的demo如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br></pre></td><td class="code"><pre><span class="line">void main() &#x3D;&gt; runApp(MyApp());</span><br><span class="line"></span><br><span class="line">class MyApp extends StatelessWidget &#123;</span><br><span class="line">  &#x2F;&#x2F; This widget is the root of your application.</span><br><span class="line">  @override</span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    return MaterialApp(</span><br><span class="line">      title: &#39;Flutter Demo&#39;,</span><br><span class="line">      theme: ThemeData(</span><br><span class="line">        &#x2F;&#x2F; This is the theme of your application.</span><br><span class="line">        &#x2F;&#x2F;</span><br><span class="line">        &#x2F;&#x2F; Try running your application with &quot;flutter run&quot;. You&#39;ll see the</span><br><span class="line">        &#x2F;&#x2F; application has a blue toolbar. Then, without quitting the app, try</span><br><span class="line">        &#x2F;&#x2F; changing the primarySwatch below to Colors.green and then invoke</span><br><span class="line">        &#x2F;&#x2F; &quot;hot reload&quot; (press &quot;r&quot; in the console where you ran &quot;flutter run&quot;,</span><br><span class="line">        &#x2F;&#x2F; or simply save your changes to &quot;hot reload&quot; in a Flutter IDE).</span><br><span class="line">        &#x2F;&#x2F; Notice that the counter didn&#39;t reset back to zero; the application</span><br><span class="line">        &#x2F;&#x2F; is not restarted.</span><br><span class="line">        primarySwatch: Colors.blue,</span><br><span class="line">      ),</span><br><span class="line">      home: MyHomePage(title: &#39;Flutter Demo Home Page&#39;),</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class MyHomePage extends StatefulWidget &#123;</span><br><span class="line">  MyHomePage(&#123;Key key, this.title&#125;) : super(key: key);</span><br><span class="line"></span><br><span class="line">  &#x2F;&#x2F; This widget is the home page of your application. It is stateful, meaning</span><br><span class="line">  &#x2F;&#x2F; that it has a State object (defined below) that contains fields that affect</span><br><span class="line">  &#x2F;&#x2F; how it looks.</span><br><span class="line"></span><br><span class="line">  &#x2F;&#x2F; This class is the configuration for the state. It holds the values (in this</span><br><span class="line">  &#x2F;&#x2F; case the title) provided by the parent (in this case the App widget) and</span><br><span class="line">  &#x2F;&#x2F; used by the build method of the State. Fields in a Widget subclass are</span><br><span class="line">  &#x2F;&#x2F; always marked &quot;final&quot;.</span><br><span class="line"></span><br><span class="line">  final String title;</span><br><span class="line"></span><br><span class="line">  @override</span><br><span class="line">  _MyHomePageState createState() &#x3D;&gt; _MyHomePageState();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class _MyHomePageState extends State&lt;MyHomePage&gt; &#123;</span><br><span class="line">  int _counter &#x3D; 0;</span><br><span class="line"></span><br><span class="line">  void _incrementCounter() &#123;</span><br><span class="line">    setState(() &#123;</span><br><span class="line">      &#x2F;&#x2F; This call to setState tells the Flutter framework that something has</span><br><span class="line">      &#x2F;&#x2F; changed in this State, which causes it to rerun the build method below</span><br><span class="line">      &#x2F;&#x2F; so that the display can reflect the updated values. If we changed</span><br><span class="line">      &#x2F;&#x2F; _counter without calling setState(), then the build method would not be</span><br><span class="line">      &#x2F;&#x2F; called again, and so nothing would appear to happen.</span><br><span class="line">      _counter++;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  @override</span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    &#x2F;&#x2F; This method is rerun every time setState is called, for instance as done</span><br><span class="line">    &#x2F;&#x2F; by the _incrementCounter method above.</span><br><span class="line">    &#x2F;&#x2F;</span><br><span class="line">    &#x2F;&#x2F; The Flutter framework has been optimized to make rerunning build methods</span><br><span class="line">    &#x2F;&#x2F; fast, so that you can just rebuild anything that needs updating rather</span><br><span class="line">    &#x2F;&#x2F; than having to individually change instances of widgets.</span><br><span class="line">    return Scaffold(</span><br><span class="line">      appBar: AppBar(</span><br><span class="line">        &#x2F;&#x2F; Here we take the value from the MyHomePage object that was created by</span><br><span class="line">        &#x2F;&#x2F; the App.build method, and use it to set our appbar title.</span><br><span class="line">        title: Text(widget.title),</span><br><span class="line">      ),</span><br><span class="line">      body: Center(</span><br><span class="line">        &#x2F;&#x2F; Center is a layout widget. It takes a single child and positions it</span><br><span class="line">        &#x2F;&#x2F; in the middle of the parent.</span><br><span class="line">        child: Column(</span><br><span class="line">          &#x2F;&#x2F; Column is also layout widget. It takes a list of children and</span><br><span class="line">          &#x2F;&#x2F; arranges them vertically. By default, it sizes itself to fit its</span><br><span class="line">          &#x2F;&#x2F; children horizontally, and tries to be as tall as its parent.</span><br><span class="line">          &#x2F;&#x2F;</span><br><span class="line">          &#x2F;&#x2F; Invoke &quot;debug painting&quot; (press &quot;p&quot; in the console, choose the</span><br><span class="line">          &#x2F;&#x2F; &quot;Toggle Debug Paint&quot; action from the Flutter Inspector in Android</span><br><span class="line">          &#x2F;&#x2F; Studio, or the &quot;Toggle Debug Paint&quot; command in Visual Studio Code)</span><br><span class="line">          &#x2F;&#x2F; to see the wireframe for each widget.</span><br><span class="line">          &#x2F;&#x2F;</span><br><span class="line">          &#x2F;&#x2F; Column has various properties to control how it sizes itself and</span><br><span class="line">          &#x2F;&#x2F; how it positions its children. Here we use mainAxisAlignment to</span><br><span class="line">          &#x2F;&#x2F; center the children vertically; the main axis here is the vertical</span><br><span class="line">          &#x2F;&#x2F; axis because Columns are vertical (the cross axis would be</span><br><span class="line">          &#x2F;&#x2F; horizontal).</span><br><span class="line">          mainAxisAlignment: MainAxisAlignment.center,</span><br><span class="line">          children: &lt;Widget&gt;[</span><br><span class="line">            Text(</span><br><span class="line">              &#39;You have pushed the button this many times:&#39;,</span><br><span class="line">            ),</span><br><span class="line">            Text(</span><br><span class="line">              &#39;$_counter&#39;,</span><br><span class="line">              style: Theme.of(context).textTheme.display1,</span><br><span class="line">            ),</span><br><span class="line">          ],</span><br><span class="line">        ),</span><br><span class="line">      ),</span><br><span class="line">      floatingActionButton: FloatingActionButton(</span><br><span class="line">        onPressed: _incrementCounter,</span><br><span class="line">        tooltip: &#39;Increment&#39;,</span><br><span class="line">        child: Icon(Icons.add),</span><br><span class="line">      ), &#x2F;&#x2F; This trailing comma makes auto-formatting nicer for build methods.</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>效果如下：<img src="https://upload-images.jianshu.io/upload_images/1663049-f960b0f634337990.gif?imageMogr2/auto-orient/strip" alt="demo2.gif"></p>
+<ul>
+<li>三.常用控件的学习<br>######1.Text文本展示类<br>类似iOS的UILabel控件，系统提供了丰富的配置属性。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">const Text(this.data, &#123;</span><br><span class="line">    Key key,</span><br><span class="line">    this.style,&#x2F;&#x2F;单独的style类，可以设置字体颜色，字体大小，字重，字间距等强大功能</span><br><span class="line">    this.strutStyle,</span><br><span class="line">    this.textAlign,&#x2F;&#x2F;对齐方式</span><br><span class="line">    this.textDirection,字体显示方向</span><br><span class="line">    this.locale,</span><br><span class="line">    this.softWrap,</span><br><span class="line">    this.overflow,</span><br><span class="line">    this.textScaleFactor,</span><br><span class="line">    this.maxLines,&#x2F;&#x2F;最大显示行数</span><br><span class="line">    this.semanticsLabel,</span><br><span class="line">  &#125;) : assert(data !&#x3D; null),</span><br><span class="line">       textSpan &#x3D; null,</span><br><span class="line">       super(key: key);</span><br></pre></td></tr></table></figure>
+当然也同样支持不同样式的复杂文本的显示：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">const Text.rich(this.textSpan, &#123;</span><br><span class="line">    Key key,</span><br><span class="line">    this.style,</span><br><span class="line">    this.strutStyle,</span><br><span class="line">    this.textAlign,</span><br><span class="line">    this.textDirection,</span><br><span class="line">    this.locale,</span><br><span class="line">    this.softWrap,</span><br><span class="line">    this.overflow,</span><br><span class="line">    this.textScaleFactor,</span><br><span class="line">    this.maxLines,</span><br><span class="line">    this.semanticsLabel,</span><br><span class="line">  &#125;) : assert(textSpan !&#x3D; null),</span><br><span class="line">       data &#x3D; null,</span><br><span class="line">       super(key: key);</span><br></pre></td></tr></table></figure>
+富文本显示可以使用RichText。<br>######2.Image<br><code>Image.asset</code>:从asset资源文件获取图片；<br><code>Image.network</code>:从网络获取图片；<br><code>Image.file</code>:从本地资源文件回去图片；<br><code>Image.memory</code>:从内存资源获取图片；</li>
+</ul>
+<p><code>FadeInImage</code>带有一个占位图的Image，比如网络较慢，或者网络图片请求失败的时候，会有一个占位图。<br>注意Image有一个Fit属性，用于设置图片内容适应方式，类似于iOS ImageView contenMode。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">class GCImageTest extends StatefulWidget &#123;</span><br><span class="line">  @override</span><br><span class="line">  _GCImageTestState createState() &#x3D;&gt; _GCImageTestState();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class _GCImageTestState extends State&lt;GCImageTest&gt; &#123;</span><br><span class="line">  Widget buildImage (url,BoxFit fit)&#123;</span><br><span class="line">    return Container(</span><br><span class="line">      child: Image.network(url,fit:fit,width: 350,height: 100,),</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">  @override</span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    return Column(</span><br><span class="line">      mainAxisAlignment: MainAxisAlignment.start,</span><br><span class="line">      crossAxisAlignment: CrossAxisAlignment.start,</span><br><span class="line">      children: &lt;Widget&gt;[</span><br><span class="line">        buildImage(&quot;https:&#x2F;&#x2F;ss1.bdstatic.com&#x2F;70cFvXSh_Q1YnxGkpoWK1HF6hhy&#x2F;it&#x2F;u&#x3D;2942065216,1819114681&amp;fm&#x3D;27&amp;gp&#x3D;0.jpg&quot;,  BoxFit.fill),</span><br><span class="line">        SizedBox(</span><br><span class="line">          height: 10,</span><br><span class="line">        ),</span><br><span class="line">        buildImage(&quot;https:&#x2F;&#x2F;ss1.bdstatic.com&#x2F;70cFvXSh_Q1YnxGkpoWK1HF6hhy&#x2F;it&#x2F;u&#x3D;2942065216,1819114681&amp;fm&#x3D;27&amp;gp&#x3D;0.jpg&quot;, BoxFit.cover),</span><br><span class="line">        SizedBox(</span><br><span class="line">          height: 10,</span><br><span class="line">        ),</span><br><span class="line">        buildImage(&quot;https:&#x2F;&#x2F;ss1.bdstatic.com&#x2F;70cFvXSh_Q1YnxGkpoWK1HF6hhy&#x2F;it&#x2F;u&#x3D;2942065216,1819114681&amp;fm&#x3D;27&amp;gp&#x3D;0.jpg&quot;,  BoxFit.fitWidth),</span><br><span class="line">        SizedBox(</span><br><span class="line">          height: 10,</span><br><span class="line">        ),</span><br><span class="line">        buildImage(&quot;https:&#x2F;&#x2F;ss1.bdstatic.com&#x2F;70cFvXSh_Q1YnxGkpoWK1HF6hhy&#x2F;it&#x2F;u&#x3D;2942065216,1819114681&amp;fm&#x3D;27&amp;gp&#x3D;0.jpg&quot;,  BoxFit.contain),</span><br><span class="line">        SizedBox(</span><br><span class="line">          height: 10,</span><br><span class="line">        ),</span><br><span class="line">        buildImage(&quot;https:&#x2F;&#x2F;ss1.bdstatic.com&#x2F;70cFvXSh_Q1YnxGkpoWK1HF6hhy&#x2F;it&#x2F;u&#x3D;2942065216,1819114681&amp;fm&#x3D;27&amp;gp&#x3D;0.jpg&quot;,  BoxFit.fitHeight),</span><br><span class="line">        SizedBox(</span><br><span class="line">          height: 10,</span><br><span class="line">        ),</span><br><span class="line">        buildImage(&quot;https:&#x2F;&#x2F;ss1.bdstatic.com&#x2F;70cFvXSh_Q1YnxGkpoWK1HF6hhy&#x2F;it&#x2F;u&#x3D;2942065216,1819114681&amp;fm&#x3D;27&amp;gp&#x3D;0.jpg&quot;,  BoxFit.scaleDown),</span><br><span class="line">        SizedBox(</span><br><span class="line">          height: 10,</span><br><span class="line">        ),</span><br><span class="line"></span><br><span class="line">        FadeInImage.assetNetwork(</span><br><span class="line">          image:&quot;&quot;,</span><br><span class="line">          placeholder:&quot;lib&#x2F;static&#x2F;express_list_icon@2x.png&quot;,</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">      ],</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://upload-images.jianshu.io/upload_images/1663049-90a83c6dd098e485.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="图片Demo.jpg"></p>
+<p>######3.按钮<br><code>RaisedButton</code>：凸起的按钮，周围有阴影，其实就是Android中的Material Design风格的Button ，继承自MaterialButton。<br><code>FlatButton</code> ：扁平化的按钮，继承自MaterialButton。<br><code>OutlineButton</code>：带边框的按钮，继承自MaterialButton。<br><code>IconButton</code>    ：图标按钮,继承自StatelessWidget。<br>这些按钮都可以通过设置shape来设置其圆角：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"> class _GCButtonTestState extends State&lt;GCButtonTest&gt; &#123;</span><br><span class="line">  @override</span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    return Container(</span><br><span class="line">      width: MediaQuery.of(context).size.width,</span><br><span class="line">      child: Column(</span><br><span class="line">        crossAxisAlignment: CrossAxisAlignment.center,</span><br><span class="line">        mainAxisAlignment: MainAxisAlignment.start,</span><br><span class="line">        children: &lt;Widget&gt;[</span><br><span class="line">          RaisedButton(</span><br><span class="line">            highlightColor: Colors.red,</span><br><span class="line">            color: Colors.orange,</span><br><span class="line">            child: Text(&quot;我是RaisedButton&quot;),</span><br><span class="line">            onPressed: () &#123;&#125;,</span><br><span class="line">          ),</span><br><span class="line">          Container(</span><br><span class="line">            width: MediaQuery.of(context).size.width,</span><br><span class="line">            height: 80,</span><br><span class="line">            padding: EdgeInsets.all(20),</span><br><span class="line">            child: FlatButton(</span><br><span class="line">              shape: const RoundedRectangleBorder(</span><br><span class="line">                  side: BorderSide.none,</span><br><span class="line">                  borderRadius: BorderRadius.all(Radius.circular(50))),</span><br><span class="line">              highlightColor: Colors.red,</span><br><span class="line">              color: Colors.orange,</span><br><span class="line">              child: Text(&quot;我是FlatButton&quot;),</span><br><span class="line">              onPressed: () &#123;&#125;,</span><br><span class="line">            ),</span><br><span class="line">          ),</span><br><span class="line">          OutlineButton(</span><br><span class="line">            shape: const RoundedRectangleBorder(</span><br><span class="line">                side: BorderSide.none,</span><br><span class="line">                borderRadius: BorderRadius.all(Radius.circular(20))),</span><br><span class="line">            onPressed: () &#123;&#125;,</span><br><span class="line">            child: Text(&quot;我是OutlineButton&quot;),</span><br><span class="line">          ),</span><br><span class="line">        ],</span><br><span class="line">      ),</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>效果如下：<br><img src="https://upload-images.jianshu.io/upload_images/1663049-5e3f97ad59bb6356.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="buttonDemo.jpg"></p>
+<p>######4.TextField<br>用户输入控件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">Widget build(BuildContext context) &#123;</span><br><span class="line">    return KeyboardAvoider(</span><br><span class="line">      focusPadding:20,</span><br><span class="line">      autoScroll: true,</span><br><span class="line">      child: Container(</span><br><span class="line">          padding: EdgeInsets.only(top: 20),</span><br><span class="line">          &#x2F;&#x2F; color: Colors.green,</span><br><span class="line">          width: MediaQuery.of(context).size.width,</span><br><span class="line">          height:80,</span><br><span class="line">          child: TextField(</span><br><span class="line">          decoration: InputDecoration(</span><br><span class="line">        &#x2F;&#x2F;设置边框，占位符等</span><br><span class="line">              border: OutlineInputBorder(</span><br><span class="line">                borderSide: BorderSide(</span><br><span class="line">                  width: 5,</span><br><span class="line">                  color: Colors.grey,</span><br><span class="line">                ),</span><br><span class="line">                borderRadius: BorderRadius.all(Radius.circular(20)),</span><br><span class="line">              ),</span><br><span class="line">              contentPadding: EdgeInsets.all(10),</span><br><span class="line">               icon: Icon(Icons.text_fields),</span><br><span class="line">              hintText: &quot;请输入你的用户名&quot;),</span><br><span class="line">            keyboardType:TextInputType.text,&#x2F;&#x2F;键盘类型</span><br><span class="line">            textInputAction: TextInputAction.done, &#x2F;&#x2F;键盘 return 按钮设置</span><br><span class="line">            maxLines: 1,</span><br><span class="line">            autocorrect: true, &#x2F;&#x2F;是否自动更正</span><br><span class="line">            autofocus: false, &#x2F;&#x2F;是否自动对焦</span><br><span class="line">            &#x2F;&#x2F; obscureText: true,  &#x2F;&#x2F;是否是密码</span><br><span class="line">            textAlign: TextAlign.center,</span><br><span class="line">            focusNode: _contentFocusNode,&#x2F;&#x2F;控制是否为第一响应， _contentFocusNode.unfocus();收起键盘，FocusScope.of(context).requestFocus(_contentFocusNode.unfocus)请求成为第一响应</span><br><span class="line">            onEditingComplete: () &#123;</span><br><span class="line">              </span><br><span class="line">            &#125;,</span><br><span class="line">             controller: controller, &#x2F;&#x2F;监听输入动作，可以在controller里设置默认值controller.text &#x3D; &quot;默认值&quot;;</span><br><span class="line"></span><br><span class="line">            onSubmitted:(String text)&#123;</span><br><span class="line">              print(text);</span><br><span class="line">              _contentFocusNode.unfocus();</span><br><span class="line">            &#125; ,&#x2F;&#x2F;提交信息</span><br><span class="line">            onChanged: (String text)&#123;</span><br><span class="line">              </span><br><span class="line">            &#125;,</span><br><span class="line">            onTap: ()&#123;</span><br><span class="line">              </span><br><span class="line">            &#125;,&#x2F;&#x2F;文字输入有变化</span><br><span class="line">          ),</span><br><span class="line">        ),</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>效果如下图：<img src="https://upload-images.jianshu.io/upload_images/1663049-70963db329fbd72c.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="TextFieldDemo.jpg"></p>
+<blockquote>
+<p>注意的是在实际使用过程中TextField是不允许被键盘遮挡的，当TextField父节点时可滚动视图时，系统会自动上拉，不被键盘遮挡。但是如果TextField父节点不是滚动视图时候，可以使用第三方<code>KeyboardAvoider</code>进行包裹，这样输入时候也不会被键盘遮盖。<code>controller</code>也必须主动销毁</p>
+</blockquote>
+<ul>
+<li>四常用布局类<br>######1.0Flex布局<br><code>direction</code>:布局方向可以设置，纵向和横向。<br><code>mainAxisAlignment</code>:主轴对齐方向，如果横向布局，那么Y轴是主节点。如果纵向布局那么X轴是主轴。<br><code>crossAxisAlignment</code>:副轴对齐方式。<br><code>children</code>:顾名思义上边字节点集合。<br>这一点不理解的话，我举个🌰：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">class GCFlexRowlayoutTest extends StatelessWidget &#123;</span><br><span class="line">  @override</span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    return Flex(</span><br><span class="line">      direction: Axis.horizontal,&#x2F;&#x2F;布局方向</span><br><span class="line">      mainAxisAlignment: MainAxisAlignment.start,&#x2F;&#x2F;主轴对齐方向，因为是横向的布局，所以主轴是X方向</span><br><span class="line">      &#x2F;&#x2F; crossAxisAlignment: CrossAxisAlignment.end,&#x2F;&#x2F;副轴对齐方式，底部对齐</span><br><span class="line">      children: &lt;Widget&gt;[</span><br><span class="line">        Flexible(</span><br><span class="line">          flex: 1,&#x2F;&#x2F;设置宽度比例</span><br><span class="line">          child: Container(</span><br><span class="line">            height: 100,</span><br><span class="line">            color: Colors.red,</span><br><span class="line">          ),</span><br><span class="line">        ),</span><br><span class="line">        Flexible(</span><br><span class="line">          flex: 2,</span><br><span class="line">          child: Container(</span><br><span class="line">            height: 150,</span><br><span class="line">            color: Colors.grey,</span><br><span class="line">          ),</span><br><span class="line">        ),</span><br><span class="line">        Flexible(</span><br><span class="line">          flex: 1,</span><br><span class="line">          child: Container(</span><br><span class="line">            height: 50,</span><br><span class="line">            color: Colors.green,</span><br><span class="line">          ),</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">      ],</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+首先我先注释掉<code>crossAxisAlignment</code>:效果如下：<img src="https://upload-images.jianshu.io/upload_images/1663049-836cee12c573fe4e.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="FlexDemo1.jpg"><br>可见副轴（即这里的Y轴），默认对齐方向是居中对齐。<br>下面我设置：<code>crossAxisAlignment: CrossAxisAlignment.end</code><br>效果如下：<img src="https://upload-images.jianshu.io/upload_images/1663049-46edec6930efb6dd.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="FlexDemo2.jpg"><br>此时设置的为Y轴的end方向对齐。其它对齐方式，可以自行试用一下。</li>
+</ul>
+<p>######1.0.1Row布局类<br>行布局类，是Flex的子类，基本功能同Flex，布局方向为横向布局<br>######1.0.2Column布局类<br>列布局类，是Flex的子类，基本功能同Flex，布局方向为纵向布局</p>
+<blockquote>
+<p>实际开发中，我们都是比较长使用这两者嵌套进行复杂UI<br>构建。<br>######2.Stack层叠布局<br>如下图效果：<br><img src="https://upload-images.jianshu.io/upload_images/1663049-d669f3077e27713b.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="stackDemo.jpg"><br>代码实现如下：</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">Widget build(BuildContext context) &#123;</span><br><span class="line">    return Center(</span><br><span class="line">      child: Container(</span><br><span class="line">        height: 100,</span><br><span class="line">        width: 100,</span><br><span class="line">        child: Stack(</span><br><span class="line">          children: &lt;Widget&gt;[</span><br><span class="line">            ClipOval(</span><br><span class="line">              child: Image.asset(</span><br><span class="line">                &quot;lib&#x2F;static&#x2F;express_list_icon@2x.png&quot;,</span><br><span class="line">                fit: BoxFit.fill,</span><br><span class="line">              ),</span><br><span class="line">            ),</span><br><span class="line">            Positioned(</span><br><span class="line">              left: 25,</span><br><span class="line">              right: 10,</span><br><span class="line">              top: 10,</span><br><span class="line">              child: Text(&quot;添加水印&quot;),</span><br><span class="line">            ),</span><br><span class="line">            Positioned(</span><br><span class="line">              right: 5,</span><br><span class="line">              top: 10,</span><br><span class="line">              child: ClipOval(</span><br><span class="line">                child: Container(</span><br><span class="line">                  width: 10,</span><br><span class="line">                  height:10,</span><br><span class="line">                  color: Colors.red,</span><br><span class="line">                ),</span><br><span class="line">              ),</span><br><span class="line">            ),</span><br><span class="line">          ],</span><br><span class="line">        ),</span><br><span class="line">      ),</span><br><span class="line">    );</span><br></pre></td></tr></table></figure>
+<p>Stack配合Positioned,FractionalOffset进行定位布局。</p>
+<pre><code>Positioned({
+    Key key,
+    this.left,
+    this.top,
+    this.right,
+    this.bottom,
+    this.width,
+    this.height,
+    @required Widget child,
+  })</code></pre>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Flutter/" rel="tag"># Flutter</a>
+              <a href="/tags/%E6%8A%80%E6%9C%AF/" rel="tag"># 技术</a>
+          </div>
+
+        
+
+
+        
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-6"><a class="nav-link" href="#为什么要学习Flutter？"><span class="nav-number">1.</span> <span class="nav-text">为什么要学习Flutter？</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Sea</p>
+  <div class="site-description" itemprop="description">时刻保持一颗学习的心</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">1</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sea</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.7.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
