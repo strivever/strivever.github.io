@@ -183,6 +183,71 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/17/iOS%E8%B6%85%E5%AE%89%E5%85%A8Timer/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Sea">
+      <meta itemprop="description" content="时刻保持一颗学习的心">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="我的小狗窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/01/17/iOS%E8%B6%85%E5%AE%89%E5%85%A8Timer/" class="post-title-link" itemprop="url">iOS超安全Timer</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-01-17 16:34:23 / 修改时间：16:36:00" itemprop="dateCreated datePublished" datetime="2020-01-17T16:34:23+08:00">2020-01-17</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h4 id><a href="#" class="headerlink" title="???"></a>???</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">NS_ASSUME_NONNULL_BEGIN</span><br><span class="line">@interface GCTimerHolder : NSObject</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line">@interface GCTimerProxy : NSObject</span><br><span class="line">&#x2F;&#x2F;&#x2F;????</span><br><span class="line">+ (GCTimerProxy *)timerWithTimeInterval:(NSTimeInterval)interval repeats:(BOOL)repeats block:(void (^)(NSTimer * _Nonnull))block;</span><br><span class="line">- (void)startTimerWithTimeInterval:(NSTimeInterval)interval repeats:(BOOL)repeats block:(void (^)(NSTimer * _Nonnull))block;</span><br><span class="line">- (void)stopTimer;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">NS_ASSUME_NONNULL_END</span><br></pre></td></tr></table></figure>
+
+<h4 id="m"><a href="#m" class="headerlink" title=".m??"></a>.m??</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">#import &quot;GCTimerProxy.h&quot;</span><br><span class="line">@interface GCTimerHolder ()</span><br><span class="line">@property (nonatomic, strong) NSTimer * timer;</span><br><span class="line">@property (nonatomic, copy) void (^block)(NSTimer *timer);</span><br><span class="line">- (void)startTimerWithTimeInterval:(NSTimeInterval)interval repeats:(BOOL)repeats block:(void (^)(NSTimer *timer))block;</span><br><span class="line">- (void)stopTimer;</span><br><span class="line">@end</span><br><span class="line">@implementation GCTimerHolder</span><br><span class="line">- (void)dealloc&#123;</span><br><span class="line">#ifdef DEBUG</span><br><span class="line">    NSLog(@&quot;GCTimerHolder dealloc&quot;);</span><br><span class="line">#endif</span><br><span class="line">&#125;</span><br><span class="line">- (void)startTimerWithTimeInterval:(NSTimeInterval)interval repeats:(BOOL)repeats block:(void (^)(NSTimer *timer))block&#123;</span><br><span class="line">    [self stopTimer];</span><br><span class="line">    self.block &#x3D; block;</span><br><span class="line">    NSTimer * timer &#x3D; [NSTimer timerWithTimeInterval:interval target:self selector:@selector(timeStart) userInfo:nil repeats:repeats];</span><br><span class="line">    [[NSRunLoop currentRunLoop]addTimer:timer forMode:NSRunLoopCommonModes];</span><br><span class="line">    [timer fire];</span><br><span class="line">    self.timer &#x3D; timer;</span><br><span class="line">&#125;</span><br><span class="line">- (void)stopTimer&#123;</span><br><span class="line">    if (self.timer) &#123;</span><br><span class="line">        [self.timer invalidate];</span><br><span class="line">        self.timer &#x3D; nil;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">- (void)timeStart&#123;</span><br><span class="line">    if (self.block) &#123;</span><br><span class="line">        self.block(self.timer);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br><span class="line">@interface GCTimerProxy ()</span><br><span class="line">@property (nonatomic, strong) GCTimerHolder * timeHolder;</span><br><span class="line">@end</span><br><span class="line">@implementation GCTimerProxy</span><br><span class="line">- (void)dealloc&#123;</span><br><span class="line">    [self.timeHolder stopTimer];</span><br><span class="line">&#125;</span><br><span class="line">+ (GCTimerProxy *)timerWithTimeInterval:(NSTimeInterval)interval repeats:(BOOL)repeats block:(void (^)(NSTimer * _Nonnull))block&#123;</span><br><span class="line">    GCTimerProxy * timerProxy &#x3D; [[GCTimerProxy alloc]init];</span><br><span class="line">    [timerProxy startTimerWithTimeInterval:interval repeats:repeats block:block];</span><br><span class="line">    return timerProxy;</span><br><span class="line">&#125;</span><br><span class="line">- (void)startTimerWithTimeInterval:(NSTimeInterval)interval repeats:(BOOL)repeats block:(void (^)(NSTimer * _Nonnull))block&#123;</span><br><span class="line">    if (self.timeHolder &#x3D;&#x3D; nil) &#123;</span><br><span class="line">        self.timeHolder &#x3D; [GCTimerHolder new];</span><br><span class="line">    &#125;</span><br><span class="line">    [self.timeHolder startTimerWithTimeInterval:interval repeats:YES block:block];</span><br><span class="line">&#125;</span><br><span class="line">- (void)stopTimer&#123;</span><br><span class="line">    [self.timeHolder stopTimer];</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<p>###Usage</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">#import &quot;GCViewController.h&quot;</span><br><span class="line">#import &lt;GCSafeTimer&#x2F;GCTimerProxy.h&gt;</span><br><span class="line">@interface GCViewController ()</span><br><span class="line">@property (nonatomic, strong) GCTimerProxy * timer;</span><br><span class="line">@property (nonatomic, strong) GCTimerProxy * timer2;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation GCViewController</span><br><span class="line"></span><br><span class="line">- (void)viewDidLoad&#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    self.timer &#x3D; [GCTimerProxy timerWithTimeInterval:1 repeats:YES block:^(NSTimer * _Nonnull timer) &#123;</span><br><span class="line">        NSLog(@&quot;timer1 start&quot;);</span><br><span class="line">    &#125;];</span><br><span class="line">    </span><br><span class="line">    self.timer2 &#x3D; [GCTimerProxy new];</span><br><span class="line">    [self.timer2 startTimerWithTimeInterval:1 repeats:YES block:^(NSTimer * _Nonnull timer) &#123;</span><br><span class="line">        NSLog(@&quot;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;timer2 start&quot;);</span><br><span class="line">    &#125;];</span><br><span class="line">	&#x2F;&#x2F; Do any additional setup after loading the view, typically from a nib.</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)didReceiveMemoryWarning</span><br><span class="line">&#123;</span><br><span class="line">    [super didReceiveMemoryWarning];</span><br><span class="line">    &#x2F;&#x2F; Dispose of any resources that can be recreated.</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<h3 id="-1"><a href="#-1" class="headerlink" title="??"></a>??</h3><h6 id="pod-‘GCSafeTimer’"><a href="#pod-‘GCSafeTimer’" class="headerlink" title="pod ‘GCSafeTimer’"></a>pod ‘GCSafeTimer’</h6><p><a href="https://github.com/strivever/GCSafeTimer.git" target="_blank" rel="noopener">????</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/17/Flutter%E5%85%A5%E9%97%A8%E4%B8%80/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -362,14 +427,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">1</span>
+          <span class="site-state-item-count">2</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
