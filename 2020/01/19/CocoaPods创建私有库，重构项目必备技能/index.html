@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="iOS随笔,技术," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="开始阅读本文前默认已安装CocoaPods环境 背景  在实际开发中可能会遇到在pod集成第三方库的时候，修改了源码，每一次pod 更新的时候都要小心翼翼的  封装的组件和模块需要在公司多个业务App里使用的时候，用pod管理会更容易维护和管理  一个较大的APP需要拆分出来两个或以上相互独立的APP时候，也可以用pod进行管理。  等等。。。。。这些都是我在实际中遇到的迫切需要创建私有库的问">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CocoaPods创建私有库，重构项目必备技能">
+<meta property="og:url" content="http://yoursite.com/2020/01/19/CocoaPods%E5%88%9B%E5%BB%BA%E7%A7%81%E6%9C%89%E5%BA%93%EF%BC%8C%E9%87%8D%E6%9E%84%E9%A1%B9%E7%9B%AE%E5%BF%85%E5%A4%87%E6%8A%80%E8%83%BD/index.html">
+<meta property="og:site_name" content="我的小狗窝">
+<meta property="og:description" content="开始阅读本文前默认已安装CocoaPods环境 背景  在实际开发中可能会遇到在pod集成第三方库的时候，修改了源码，每一次pod 更新的时候都要小心翼翼的  封装的组件和模块需要在公司多个业务App里使用的时候，用pod管理会更容易维护和管理  一个较大的APP需要拆分出来两个或以上相互独立的APP时候，也可以用pod进行管理。  等等。。。。。这些都是我在实际中遇到的迫切需要创建私有库的问">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1663049-2398a4af435610f4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1663049-835bda2b5cc537f7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1663049-59692854fc13f7f1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1663049-4f4ae287b61fe00b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1663049-44fb5213cd80f349.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1663049-36e39d72641a0dd2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1663049-8575bc3aa7b14c60.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1663049-6d7a77515287b3c2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1663049-c17dd8ae0e72d6e6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1663049-66233934dd79eebb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1663049-ebef60f1c4f8618d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1663049-82f404ca0ed33967.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1663049-45e59ee966eb11cf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1663049-321e1f3ca183bc92.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1663049-705cc934df7d1f3d.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1663049-62908956bcf0edae.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1663049-236e9109a9c62b3c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1663049-6020235867a20972.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1663049-b80bc13e9af5b1c3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="article:published_time" content="2020-01-19T03:03:11.000Z">
+<meta property="article:modified_time" content="2020-01-19T03:04:04.086Z">
+<meta property="article:author" content="Sea">
+<meta property="article:tag" content="iOS随笔">
+<meta property="article:tag" content="技术">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/1663049-2398a4af435610f4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/01/19/CocoaPods创建私有库，重构项目必备技能/"/>
+
+
+
+
+
+  <title>CocoaPods创建私有库，重构项目必备技能 | 我的小狗窝</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">我的小狗窝</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">记录生活，记录自己</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/19/CocoaPods%E5%88%9B%E5%BB%BA%E7%A7%81%E6%9C%89%E5%BA%93%EF%BC%8C%E9%87%8D%E6%9E%84%E9%A1%B9%E7%9B%AE%E5%BF%85%E5%A4%87%E6%8A%80%E8%83%BD/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Sea">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="我的小狗窝">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">CocoaPods创建私有库，重构项目必备技能</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-01-19T11:03:11+08:00">
+                2020-01-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2020/01/19/CocoaPods%E5%88%9B%E5%BB%BA%E7%A7%81%E6%9C%89%E5%BA%93%EF%BC%8C%E9%87%8D%E6%9E%84%E9%A1%B9%E7%9B%AE%E5%BF%85%E5%A4%87%E6%8A%80%E8%83%BD/" class="leancloud_visitors" data-flag-title="CocoaPods创建私有库，重构项目必备技能">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <meta name="referrer" content="no-referrer">
+
+<p><em>开始阅读本文前默认已安装CocoaPods环境</em></p>
+<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p><img src="https://upload-images.jianshu.io/upload_images/1663049-2398a4af435610f4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="为啥要学会创建私有库.png"></p>
+<ul>
+<li><p>在实际开发中可能会遇到在pod集成第三方库的时候，修改了源码，每一次pod 更新的时候都要小心翼翼的</p>
+</li>
+<li><p>封装的组件和模块需要在公司多个业务App里使用的时候，用pod管理会更容易维护和管理</p>
+</li>
+<li><p>一个较大的APP需要拆分出来两个或以上相互独立的APP时候，也可以用pod进行管理。</p>
+</li>
+<li><p>等等。。。。。<br>这些都是我在实际中遇到的迫切需要创建私有库的问题。</p>
+</li>
+</ul>
+<blockquote>
+<p>看之前可以了解一下CocoaPods原理，介绍文章挺多的 ，我就不啰嗦了<br>  <a href="https://juejin.im/post/5ba8e3c95188255c581aacbd" target="_blank" rel="noopener">CocoaPods原理点这里</a></p>
+</blockquote>
+<h2 id="开始跟着我创建私有库吧"><a href="#开始跟着我创建私有库吧" class="headerlink" title="开始跟着我创建私有库吧"></a>开始跟着我创建私有库吧</h2><h3 id="1-创建podspec文件"><a href="#1-创建podspec文件" class="headerlink" title="1.创建podspec文件"></a>1.创建podspec文件</h3><ol>
+<li>什么是podspec？文件夹打开<code>~/.cocoapods/repos</code>看到</li>
+</ol>
+<p><img src="https://upload-images.jianshu.io/upload_images/1663049-835bda2b5cc537f7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="cocoapods官方specs集合.png"><br>specs存放的就是cocoapod官网库的<code>specification:说明书</code>，通过这个podspec文件里的信息，找到对应资源URL，然后clone到我们的pod中。可以理解为书的目录，我们查找第三方库的时候实际就是查找这个specs集合。所以我们创建私有库第一步就是创建我们的spec，目录。</p>
+<ol start="2">
+<li>开始创建私有库podspec，理解为pod私有库说明书<blockquote>
+<p>下面我会以我在实际开发中将修改过的网易云信的SDK放在私有库中过程进行一步步操作</p>
+</blockquote>
+</li>
+</ol>
+<p>在github上创建一个存放<code>specification</code>的仓库，<strong>注意不是存放源码的库，一定不要搞错了</strong><img src="https://upload-images.jianshu.io/upload_images/1663049-59692854fc13f7f1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="创建spec私有库.png"><br>我建议先创建空的<code>repository</code>,为了区分命名最好以<code>spec</code>为后缀，说明这是存说明书的库</p>
+<p>然后将这个库添加到<code>~/.cocoapods/repos</code>中，操作很简单，终端执行pod命令<code>pod repo add TDNIMKitSpec  git@github.com:strivever/TDNIMKitSpec.git</code><img src="https://upload-images.jianshu.io/upload_images/1663049-4f4ae287b61fe00b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="终端pod命令.png"><br>命令格式：<code>pod repo  add  【specName】   【spec远程仓库地址】</code>第一步完成，GOGOGO</p>
+<h3 id="2-制作我们的pod库"><a href="#2-制作我们的pod库" class="headerlink" title="2.制作我们的pod库"></a>2.制作我们的pod库</h3><ol>
+<li><p>cocoapods为我们提供了模板，cd 到你需要创建的文件夹里，然后<code>pod lib create TDNIMKit</code>( pod lib create 【你的pod库名】)命令，等待clone模板<img src="https://upload-images.jianshu.io/upload_images/1663049-44fb5213cd80f349.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="pod lib create.png"><br>等待一会…….<img src="https://upload-images.jianshu.io/upload_images/1663049-36e39d72641a0dd2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="templete.png"><br>填写几个配置，很简单，根据实际需要选择即可。我选择的是iOS平台，object-C语言，创建demo，不需要测试框架等等。<br>配置完成之后，会自动打开拉取的模板工程。</p>
+</li>
+<li><p>以上都很简单，还是比较顺畅的，下边继续GO<img src="https://upload-images.jianshu.io/upload_images/1663049-8575bc3aa7b14c60.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="replaceMe.png"></p>
+</li>
+</ol>
+<p>Finder进入ReplaceMe.m文件夹<img src="https://upload-images.jianshu.io/upload_images/1663049-6d7a77515287b3c2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="showInFinder.png"></p>
+<p>在Finder中将你自己编写的源码替换放在ReplaceMe.m文件夹下。<img src="https://upload-images.jianshu.io/upload_images/1663049-c17dd8ae0e72d6e6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="自己源代码放入文件夹.png"></p>
+<blockquote>
+<p>文件放的位置不一定必须在模板中的Classes中，只要后边路径填写正确即可。如图，我是直接放在了<code>TDNIMKit</code>下，Classes存放的是代码，NIMSDK存放的是SDK和.a文件，Resources是图片等资源文件。</p>
+</blockquote>
+<ol start="3">
+<li>文件导入成功之后，再回到我们的工程文件，打开<code>Podspec Metadata</code>文件夹下的<code>TDNIMKit.podspec</code>文件，进行编辑，这是最重要也是最容易出错的一步。<br>看一下默认的podspec文件ruby代码：我简单的注释了一下<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">Pod::Spec.new do |s|</span><br><span class="line">  #pod私有库名称</span><br><span class="line">  s.name             &#x3D; &#39;TDNIMKit&#39;</span><br><span class="line">  #pod私有库版本号</span><br><span class="line">  s.version          &#x3D; &#39;0.1.0&#39;</span><br><span class="line">  #pod私有库概要</span><br><span class="line">  s.summary          &#x3D; &#39;A short description of TDNIMKit.&#39;</span><br><span class="line"></span><br><span class="line"># This description is used to generate tags and improve search results.</span><br><span class="line">#   * Think: What does it do? Why did you write it? What is the focus?</span><br><span class="line">#   * Try to keep it short, snappy and to the point.</span><br><span class="line">#   * Write the description between the DESC delimiters below.</span><br><span class="line">#   * Finally, don&#39;t worry about the indent, CocoaPods strips it!</span><br><span class="line"></span><br><span class="line">  s.description      &#x3D; &lt;&lt;-DESC</span><br><span class="line">TODO: Add long description of the pod here.</span><br><span class="line">                       DESC</span><br><span class="line">  #主要，最好能访问</span><br><span class="line">  s.homepage         &#x3D; &#39;https:&#x2F;&#x2F;github.com&#x2F;458362366@qq.com&#x2F;TDNIMKit&#39;</span><br><span class="line">  # s.screenshots     &#x3D; &#39;www.example.com&#x2F;screenshots_1&#39;, &#39;www.example.com&#x2F;screenshots_2&#39;</span><br><span class="line">  #开源协议</span><br><span class="line">  s.license          &#x3D; &#123; :type &#x3D;&gt; &#39;MIT&#39;, :file &#x3D;&gt; &#39;LICENSE&#39; &#125;</span><br><span class="line">  #开源作者</span><br><span class="line">  s.author           &#x3D; &#39;Striver&#39;</span><br><span class="line">  #源码地址，clone时候就需要使用这个地址跟版本拉取</span><br><span class="line">  s.source           &#x3D; &#123; :git &#x3D;&gt; &#39;https:&#x2F;&#x2F;github.com&#x2F;458362366@qq.com&#x2F;TDNIMKit.git&#39;, :tag &#x3D;&gt;&#39;0.1.0&#39; &#125;</span><br><span class="line">  #支持的系统版本</span><br><span class="line">  s.ios.deployment_target &#x3D; &#39;8.0&#39;</span><br><span class="line">  #源码相对路径</span><br><span class="line">  s.source_files &#x3D; &#39;TDNIMKit&#x2F;Classes&#x2F;**&#x2F;*&#39;</span><br><span class="line">  </span><br><span class="line">  # s.resource_bundles &#x3D; &#123;</span><br><span class="line">  #   &#39;TDNIMKit&#39; &#x3D;&gt; [&#39;TDNIMKit&#x2F;Assets&#x2F;*.png&#39;]</span><br><span class="line">  # &#125;</span><br><span class="line">  # s.public_header_files &#x3D; &#39;Pod&#x2F;Classes&#x2F;**&#x2F;*.h&#39;</span><br><span class="line">  #需要使用的框架</span><br><span class="line">  # s.frameworks &#x3D; &#39;UIKit&#39;, &#39;MapKit&#39;</span><br><span class="line">  #依赖的其它第三方库</span><br><span class="line">  # s.dependency &#39;AFNetworking&#39;, &#39;~&gt; 2.3&#39;</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+然后我来编辑一下这个podspec：</li>
+</ol>
+<p><code>s.source_files</code>代码相对路径，这个最容易出错，我详细解释这个路径怎么去填：<br><img src="https://upload-images.jianshu.io/upload_images/1663049-66233934dd79eebb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="WeChate9847b56ce89a58c91b98254cea26542.png"></p>
+<p>所以我的<code>s.source_files = &#39;TDNIMKit/Classes/**/*&#39;</code>,意思匹配Classes目录下的所有文件和文件夹<br>当然如果你没有文件夹嵌套可以写 <code>s.source_files = &#39;TDNIMKit/Classes/*.{h,m}&#39;</code>,意思匹配Classes下的任意<code>.h .m</code>文件<br>修改后</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">Pod::Spec.new do |s|</span><br><span class="line">  #pod私有库名称</span><br><span class="line">  s.name             &#x3D; &#39;TDNIMKit&#39;</span><br><span class="line">  #pod私有库版本号</span><br><span class="line">  s.version          &#x3D; &#39;0.1.0&#39;</span><br><span class="line">  #pod私有库概要</span><br><span class="line">  s.summary          &#x3D; &#39;striver custom NIMUIKit&#39;</span><br><span class="line">  #主要，最好能访问</span><br><span class="line">  s.homepage         &#x3D; &#39;https:&#x2F;&#x2F;github.com&#x2F;458362366@qq.com&#x2F;TDNIMKit&#39;</span><br><span class="line">  # s.screenshots     &#x3D; &#39;www.example.com&#x2F;screenshots_1&#39;, &#39;www.example.com&#x2F;screenshots_2&#39;</span><br><span class="line">  #开源协议</span><br><span class="line">  s.license          &#x3D; &#123; :type &#x3D;&gt; &#39;MIT&#39;, :file &#x3D;&gt; &#39;LICENSE&#39; &#125;</span><br><span class="line">  #开源作者</span><br><span class="line">  s.author           &#x3D; &#39;Striver&#39;</span><br><span class="line">  #源码地址，clone时候就需要使用这个地址跟版本拉取</span><br><span class="line">  s.source           &#x3D; &#123; :git &#x3D;&gt; &#39;https:&#x2F;&#x2F;github.com&#x2F;458362366@qq.com&#x2F;TDNIMKit.git&#39;, :tag &#x3D;&gt;&#39;0.1.0&#39; &#125;</span><br><span class="line">  #支持的系统版本</span><br><span class="line">  s.ios.deployment_target &#x3D; &#39;8.0&#39;</span><br><span class="line">  #源码相对路径</span><br><span class="line">  s.source_files &#x3D; &#39;TDNIMKit&#x2F;Classes&#x2F;**&#x2F;*&#39;</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<p>然后打开工程podfile文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">use_frameworks!</span><br><span class="line"></span><br><span class="line">platform :ios, &#39;8.0&#39;</span><br><span class="line"></span><br><span class="line">target &#39;TDNIMKit_Example&#39; do</span><br><span class="line">  pod &#39;TDNIMKit&#39;, :path &#x3D;&gt; &#39;..&#x2F;&#39;</span><br><span class="line"></span><br><span class="line">  target &#39;TDNIMKit_Tests&#39; do</span><br><span class="line">    inherit! :search_paths</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">  end</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<p>写入TDNIMKit.podspec路径  如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">use_frameworks!</span><br><span class="line"></span><br><span class="line">platform :ios, &#39;8.0&#39;</span><br><span class="line"></span><br><span class="line">target &#39;TDNIMKit_Example&#39; do</span><br><span class="line">  pod &#39;TDNIMKit&#39;, :path &#x3D;&gt; &#39;..&#x2F;TDNIMKit.podspec&#39;</span><br><span class="line"></span><br><span class="line">  target &#39;TDNIMKit_Tests&#39; do</span><br><span class="line">    inherit! :search_paths</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">  end</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<p>尝试去执行以下pod install<img src="https://upload-images.jianshu.io/upload_images/1663049-ebef60f1c4f8618d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="pod install"><br>再看工程发送了什么变化：<img src="https://upload-images.jianshu.io/upload_images/1663049-82f404ca0ed33967.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="工程已经导入了源码"></p>
+<p>不要高兴太早，你会发现我们的NIMSDK呢，我们资源路径怎么加载呢？？？？</p>
+<p>其实也是跟加载<code>s.source_files</code>一样的：看一下framework文件夹下文件，framework 和.a文件<br><img src="https://upload-images.jianshu.io/upload_images/1663049-45e59ee966eb11cf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="WeChatc941d565d93241d4a14b0a446616fc6e.png"></p>
+<p>继续回去编辑<code>TDNIMKit.podspec</code>增加如下代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#资源文件加载</span><br><span class="line"> s.resources &#x3D; &#39;TDNIMKit&#x2F;Resources&#x2F;*.*&#39;</span><br><span class="line"> #framework文件加载</span><br><span class="line"> s.vendored_frameworks &#x3D; &#39;**&#x2F;NIMSDK.framework&#39;</span><br><span class="line"> #.a静态库加载</span><br><span class="line"> s.vendored_libraries &#x3D; &#39;TDNIMKit&#x2F;NIMSDK&#x2F;Libs&#x2F;*.a&#39;</span><br></pre></td></tr></table></figure>
+<p>在pod install，完成后发现都导入了哈哈<img src="https://upload-images.jianshu.io/upload_images/1663049-321e1f3ca183bc92.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="资源文件，源码，framework都导入了"></p>
+<ol start="4">
+<li><p>然后可以进行本地验证podspec文件是否正确了（一步步采坑指南）；</p>
+<p><code>cd 到TDNIMKit.podspec</code>目录：执行<code>pod lib lint</code>，焦急的等待和期待！！！！！</p>
+</li>
+</ol>
+<p>果然会校验不通过，赶紧查看错误，经过一阵分析</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"> -&gt; TDNIMKit (0.1.0)</span><br><span class="line">    - WARN  | url: The URL (https:&#x2F;&#x2F;github.com&#x2F;458362366@qq.com&#x2F;TDNIMKit) is not reachable.</span><br><span class="line">    - ERROR | [iOS] xcodebuild: Returned an unsuccessful exit code. You can use &#96;--verbose&#96; for more information.</span><br><span class="line">    - NOTE  | xcodebuild:  note: Using new build system</span><br><span class="line">    - NOTE  | [iOS] xcodebuild:  note: Planning build</span><br><span class="line">    - NOTE  | [iOS] xcodebuild:  note: Constructing build description</span><br><span class="line">    - NOTE  | [iOS] xcodebuild:  warning: Skipping code signing because the target does not have an Info.plist file and one is not being generated automatically. (in target &#39;App&#39; from project &#39;App&#39;)</span><br><span class="line">    - WARN  | [iOS] xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;NIMSDK&#x2F;NIMSDK.framework&#x2F;Headers&#x2F;NIMChatManagerProtocol.h:200:12: warning: parameter &#39;NIMMessage&#39; not found in the function declaration [-Wdocumentation]</span><br><span class="line">    - NOTE  | [iOS] xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;NIMSDK&#x2F;NIMSDK.framework&#x2F;Headers&#x2F;NIMChatManagerProtocol.h:200:12: note: did you mean &#39;messages&#39;?</span><br><span class="line">    - WARN  | [iOS] xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;NIMSDK&#x2F;NIMSDK.framework&#x2F;Headers&#x2F;NIMChatManagerProtocol.h:210:12: warning: parameter &#39;NIMMessage&#39; not found in the function declaration [-Wdocumentation]</span><br><span class="line">    - NOTE  | [iOS] xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;NIMSDK&#x2F;NIMSDK.framework&#x2F;Headers&#x2F;NIMChatManagerProtocol.h:210:12: note: did you mean &#39;message&#39;?</span><br><span class="line">    - WARN  | [iOS] xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;NIMSDK&#x2F;NIMSDK.framework&#x2F;Headers&#x2F;NIMConversationManagerProtocol.h:263:12: warning: parameter &#39;session&#39; not found in the function declaration [-Wdocumentation]</span><br><span class="line">    - NOTE  | [iOS] xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;NIMSDK&#x2F;NIMSDK.framework&#x2F;Headers&#x2F;NIMConversationManagerProtocol.h:263:12: note: did you mean &#39;notify&#39;?</span><br><span class="line">    - NOTE  | [iOS] xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;Classes&#x2F;Global&#x2F;NIMKitDependency.h:16:9: fatal error: &#39;M80AttributedLabel.h&#39; file not found</span><br><span class="line"></span><br><span class="line">[!] TDNIMKit did not pass validation, due to 1 error and 4 warnings.</span><br><span class="line">You can use the &#96;--no-clean&#96; option to inspect any issue.</span><br></pre></td></tr></table></figure>
+
+<p>哦，原来是依赖了第三方库啊，我现在就去添加依赖。。继续编辑<code>TDNIMKit.podspec</code><br>增加</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">#依赖的系统library</span><br><span class="line">  s.libraries &#x3D; &#39;sqlite3.0&#39;, &#39;z&#39;, &#39;c++&#39;</span><br><span class="line">  </span><br><span class="line">  #依赖的第三方库</span><br><span class="line">  s.dependency &#39;M80AttributedLabel&#39;, &#39;~&gt; 1.9.9&#39;</span><br><span class="line">  s.dependency &#39;FLAnimatedImage&#39;, &#39;~&gt; 1.0.12&#39;</span><br><span class="line">  s.dependency &#39;SDWebImage&#39;, &#39;~&gt; 4.2.2&#39;</span><br><span class="line">  s.dependency &#39;Toast&#39;, &#39;~&gt; 3.0&#39;</span><br><span class="line">  s.dependency &#39;TZImagePickerController&#39;, &#39;~&gt; 3.2.1&#39;</span><br></pre></td></tr></table></figure>
+<p>再pod install</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Example [master●●] % pod install</span><br><span class="line">Analyzing dependencies</span><br><span class="line">Downloading dependencies</span><br><span class="line">Installing FLAnimatedImage (1.0.12)</span><br><span class="line">Installing M80AttributedLabel (1.9.9)</span><br><span class="line">Installing SDWebImage (4.2.3)</span><br><span class="line">Installing TDNIMKit 0.1.0</span><br><span class="line">Installing TZImagePickerController (3.2.7)</span><br><span class="line">Installing Toast (3.1.0)</span><br><span class="line">Generating Pods project</span><br><span class="line">Integrating client project</span><br><span class="line">Pod installation complete! There is 1 dependency from the Podfile and 6 total pods installed.</span><br></pre></td></tr></table></figure>
+<p>离成功又进了一步啊<img src="https://upload-images.jianshu.io/upload_images/1663049-705cc934df7d1f3d.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="高兴.jpg"></p>
+<p>继续验证podspec，很激动，这会肯定能验证通过</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br></pre></td><td class="code"><pre><span class="line"> -&gt; TDNIMKit (0.1.0)</span><br><span class="line">    - WARN  | url: The URL (https:&#x2F;&#x2F;github.com&#x2F;458362366@qq.com&#x2F;TDNIMKit) is not reachable.</span><br><span class="line">    - ERROR | [iOS] xcodebuild: Returned an unsuccessful exit code. You can use &#96;--verbose&#96; for more information.</span><br><span class="line">    - NOTE  | xcodebuild:  note: Using new build system</span><br><span class="line">    - NOTE  | [iOS] xcodebuild:  note: Planning build</span><br><span class="line">    - NOTE  | [iOS] xcodebuild:  note: Constructing build description</span><br><span class="line">    - NOTE  | [iOS] xcodebuild:  warning: Skipping code signing because the target does not have an Info.plist file and one is not being generated automatically. (in target &#39;App&#39; from project &#39;App&#39;)</span><br><span class="line">    - WARN  | [iOS] xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;NIMSDK&#x2F;NIMSDK.framework&#x2F;Headers&#x2F;NIMChatManagerProtocol.h:200:12: warning: parameter &#39;NIMMessage&#39; not found in the function declaration [-Wdocumentation]</span><br><span class="line">    - NOTE  | [iOS] xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;NIMSDK&#x2F;NIMSDK.framework&#x2F;Headers&#x2F;NIMChatManagerProtocol.h:200:12: note: did you mean &#39;messages&#39;?</span><br><span class="line">    - WARN  | [iOS] xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;NIMSDK&#x2F;NIMSDK.framework&#x2F;Headers&#x2F;NIMChatManagerProtocol.h:210:12: warning: parameter &#39;NIMMessage&#39; not found in the function declaration [-Wdocumentation]</span><br><span class="line">    - NOTE  | [iOS] xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;NIMSDK&#x2F;NIMSDK.framework&#x2F;Headers&#x2F;NIMChatManagerProtocol.h:210:12: note: did you mean &#39;message&#39;?</span><br><span class="line">    - WARN  | [iOS] xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;NIMSDK&#x2F;NIMSDK.framework&#x2F;Headers&#x2F;NIMConversationManagerProtocol.h:263:12: warning: parameter &#39;session&#39; not found in the function declaration [-Wdocumentation]</span><br><span class="line">    - NOTE  | [iOS] xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;NIMSDK&#x2F;NIMSDK.framework&#x2F;Headers&#x2F;NIMConversationManagerProtocol.h:263:12: note: did you mean &#39;notify&#39;?</span><br><span class="line">    - NOTE  | [iOS] xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;Classes&#x2F;Global&#x2F;NIMKitDependency.h:16:9: fatal error: &#39;M80AttributedLabel.h&#39; file not found</span><br><span class="line"></span><br><span class="line">[!] TDNIMKit did not pass validation, due to 1 error and 4 warnings.</span><br><span class="line">You can use the &#96;--no-clean&#96; option to inspect any issue.</span><br><span class="line">TDNIMKit [master●●] % cd Example</span><br><span class="line">Example [master●●] % pod install</span><br><span class="line">Analyzing dependencies</span><br><span class="line">Downloading dependencies</span><br><span class="line">Installing FLAnimatedImage (1.0.12)</span><br><span class="line">Installing M80AttributedLabel (1.9.9)</span><br><span class="line">Installing SDWebImage (4.2.3)</span><br><span class="line">Installing TDNIMKit 0.1.0</span><br><span class="line">Installing TZImagePickerController (3.2.7)</span><br><span class="line">Installing Toast (3.1.0)</span><br><span class="line">Generating Pods project</span><br><span class="line">Integrating client project</span><br><span class="line">Pod installation complete! There is 1 dependency from the Podfile and 6 total pods installed.</span><br><span class="line">Example [master●●] % cd ..</span><br><span class="line">TDNIMKit [master●●] % pod lib lint</span><br><span class="line"></span><br><span class="line"> -&gt; TDNIMKit (0.1.0)</span><br><span class="line">    - WARN  | url: The URL (https:&#x2F;&#x2F;github.com&#x2F;458362366@qq.com&#x2F;TDNIMKit) is not reachable.</span><br><span class="line">    - ERROR | [iOS] xcodebuild: Returned an unsuccessful exit code. You can use &#96;--verbose&#96; for more information.</span><br><span class="line">    - NOTE  | xcodebuild:  note: Using new build system</span><br><span class="line">    - NOTE  | [iOS] xcodebuild:  note: Planning build</span><br><span class="line">    - NOTE  | [iOS] xcodebuild:  note: Constructing build description</span><br><span class="line">    - WARN  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;Classes&#x2F;Sections&#x2F;Team&#x2F;NIMTeamMemberCardViewController.m:183:17: warning: block implicitly retains &#39;self&#39;; explicitly mention &#39;self&#39; to indicate this is intended behavior [-Wimplicit-retain-self]</span><br><span class="line">    - WARN  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;Classes&#x2F;Sections&#x2F;Team&#x2F;NIMTeamMemberCardViewController.m:184:18: warning: block implicitly retains &#39;self&#39;; explicitly mention &#39;self&#39; to indicate this is intended behavior [-Wimplicit-retain-self]</span><br><span class="line">    - WARN  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;Classes&#x2F;Sections&#x2F;Team&#x2F;NIMTeamMemberCardViewController.m:200:17: warning: block implicitly retains &#39;self&#39;; explicitly mention &#39;self&#39; to indicate this is intended behavior [-Wimplicit-retain-self]</span><br><span class="line">    - WARN  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;Classes&#x2F;Sections&#x2F;Team&#x2F;NIMTeamMemberCardViewController.m:201:18: warning: block implicitly retains &#39;self&#39;; explicitly mention &#39;self&#39; to indicate this is intended behavior [-Wimplicit-retain-self]</span><br><span class="line">    - WARN  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;Classes&#x2F;Sections&#x2F;Team&#x2F;NIMTeamMemberCardViewController.m:218:25: warning: block implicitly retains &#39;self&#39;; explicitly mention &#39;self&#39; to indicate this is intended behavior [-Wimplicit-retain-self]</span><br><span class="line">    - WARN  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;Classes&#x2F;Sections&#x2F;Team&#x2F;NIMTeamMemberCardViewController.m:219:26: warning: block implicitly retains &#39;self&#39;; explicitly mention &#39;self&#39; to indicate this is intended behavior [-Wimplicit-retain-self]</span><br><span class="line">    - WARN  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;Classes&#x2F;Sections&#x2F;Team&#x2F;NIMTeamMemberCardViewController.m:237:29: warning: block implicitly retains &#39;self&#39;; explicitly mention &#39;self&#39; to indicate this is intended behavior [-Wimplicit-retain-self]</span><br><span class="line">    - WARN  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;Classes&#x2F;Sections&#x2F;Team&#x2F;NIMTeamMemberCardViewController.m:238:30: warning: block implicitly retains &#39;self&#39;; explicitly mention &#39;self&#39; to indicate this is intended behavior [-Wimplicit-retain-self]</span><br><span class="line">    - WARN  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;Classes&#x2F;Sections&#x2F;Session&#x2F;Object&#x2F;NIMSessionMsgDatasource.m:82:100: warning: block implicitly retains &#39;self&#39;; explicitly mention &#39;self&#39; to indicate this is intended behavior [-Wimplicit-retain-self]</span><br><span class="line">    - WARN  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;Classes&#x2F;Sections&#x2F;Session&#x2F;Object&#x2F;NIMSessionMsgDatasource.m:124:71: warning: incompatible pointer types sending &#39;NIMMessage *&#39; to parameter of type &#39;NSString * _Nonnull&#39; [-Wincompatible-pointer-types]</span><br><span class="line">    - NOTE  | xcodebuild:  &#x2F;Applications&#x2F;Xcode.app&#x2F;Contents&#x2F;Developer&#x2F;Platforms&#x2F;iPhoneSimulator.platform&#x2F;Developer&#x2F;SDKs&#x2F;iPhoneSimulator13.2.sdk&#x2F;System&#x2F;Library&#x2F;Frameworks&#x2F;Foundation.framework&#x2F;Headers&#x2F;NSString.h:147:37: note: passing argument to parameter &#39;aString&#39; here</span><br><span class="line">    - WARN  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;Classes&#x2F;Sections&#x2F;Session&#x2F;Object&#x2F;NIMSessionMsgDatasource.m:151:104: warning: block implicitly retains &#39;self&#39;; explicitly mention &#39;self&#39; to indicate this is intended behavior [-Wimplicit-retain-self]</span><br><span class="line">    - WARN  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;Classes&#x2F;Sections&#x2F;Session&#x2F;Object&#x2F;NIMSessionMsgDatasource.m:293:19: warning: unused variable &#39;index&#39; [-Wunused-variable]</span><br><span class="line">    - WARN  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;Classes&#x2F;Sections&#x2F;Session&#x2F;Object&#x2F;NIMSessionMsgDatasource.m:308:100: warning: block implicitly retains &#39;self&#39;; explicitly mention &#39;self&#39; to indicate this is intended behavior [-Wimplicit-retain-self]</span><br><span class="line">    - WARN  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;Classes&#x2F;Sections&#x2F;Session&#x2F;Object&#x2F;NIMSessionMsgDatasource.m:347:15: warning: unused variable &#39;index&#39; [-Wunused-variable]</span><br><span class="line">    - WARN  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;Classes&#x2F;Sections&#x2F;Session&#x2F;Object&#x2F;NIMSessionMsgDatasource.m:370:96: warning: block implicitly retains &#39;self&#39;; explicitly mention &#39;self&#39; to indicate this is intended behavior [-Wimplicit-retain-self]</span><br><span class="line">    - WARN  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;Classes&#x2F;Sections&#x2F;Session&#x2F;Object&#x2F;NIMSessionInteractorImpl.m:373:46: warning: undeclared selector &#39;sendImageMessage:&#39; [-Wundeclared-selector]</span><br><span class="line">    - WARN  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;Classes&#x2F;Sections&#x2F;Session&#x2F;Object&#x2F;NIMSessionInteractorImpl.m:375:46: warning: undeclared selector &#39;sendImageMessage:&#39; [-Wundeclared-selector]</span><br><span class="line">    - WARN  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;Classes&#x2F;Sections&#x2F;Session&#x2F;Object&#x2F;NIMSessionInteractorImpl.m:396:46: warning: undeclared selector &#39;sendImageMessage:&#39; [-Wundeclared-selector]</span><br><span class="line">    - WARN  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;Classes&#x2F;Sections&#x2F;Session&#x2F;Object&#x2F;NIMSessionInteractorImpl.m:398:46: warning: undeclared selector &#39;sendImageMessage:&#39; [-Wundeclared-selector]</span><br><span class="line">    - WARN  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;Classes&#x2F;Sections&#x2F;Session&#x2F;Object&#x2F;NIMSessionInteractorImpl.m:381:33: warning: unused variable &#39;message&#39; [-Wunused-variable]</span><br><span class="line">    - WARN  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;Classes&#x2F;Sections&#x2F;Session&#x2F;Object&#x2F;NIMSessionInteractorImpl.m:365:25: warning: unused variable &#39;weakSelf&#39; [-Wunused-variable]</span><br><span class="line">    - WARN  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;Classes&#x2F;Sections&#x2F;Session&#x2F;Object&#x2F;NIMSessionInteractorImpl.m:424:38: warning: undeclared selector &#39;sendImageMessage:&#39; [-Wundeclared-selector]</span><br><span class="line">    - WARN  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;Classes&#x2F;Sections&#x2F;Session&#x2F;Object&#x2F;NIMSessionInteractorImpl.m:427:38: warning: undeclared selector &#39;sendImageMessage:&#39; [-Wundeclared-selector]</span><br><span class="line">    - WARN  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;Classes&#x2F;Sections&#x2F;Session&#x2F;Object&#x2F;NIMSessionInteractorImpl.m:421:21: warning: unused variable &#39;message&#39; [-Wunused-variable]</span><br><span class="line">    - WARN  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;Classes&#x2F;Sections&#x2F;Session&#x2F;Object&#x2F;NIMSessionInteractorImpl.m:419:25: warning: unused variable &#39;weakSelf&#39; [-Wunused-variable]</span><br><span class="line">    - WARN  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;Classes&#x2F;Sections&#x2F;Session&#x2F;View&#x2F;SessionContentView&#x2F;NIMSessionFileTransContentView.m:71:63: warning: format specifies type &#39;ssize_t&#39; (aka &#39;long&#39;) but the argument has type &#39;long long&#39; [-Wformat]</span><br><span class="line">    - WARN  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;Classes&#x2F;Sections&#x2F;Common&#x2F;NIMKitMediaFetcher.m:95:41: warning: block implicitly retains &#39;self&#39;; explicitly mention &#39;self&#39; to indicate this is intended behavior [-Wimplicit-retain-self]</span><br><span class="line">    - WARN  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;Classes&#x2F;Sections&#x2F;Session&#x2F;Object&#x2F;NIMKitAudioCenter.m:65:13: warning: code will never be executed [-Wunreachable-code]</span><br><span class="line">    - WARN  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;Classes&#x2F;Sections&#x2F;Input&#x2F;NIMInputView.m:313:18: warning: block implicitly retains &#39;self&#39;; explicitly mention &#39;self&#39; to indicate this is intended behavior [-Wimplicit-retain-self]</span><br><span class="line">    - WARN  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;Classes&#x2F;Sections&#x2F;Contact&#x2F;NIMContactSelectViewController.m:140:13: warning: block implicitly retains &#39;self&#39;; explicitly mention &#39;self&#39; to indicate this is intended behavior [-Wimplicit-retain-self]</span><br><span class="line">    - WARN  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;Classes&#x2F;Sections&#x2F;Contact&#x2F;NIMContactSelectViewController.m:141:14: warning: block implicitly retains &#39;self&#39;; explicitly mention &#39;self&#39; to indicate this is intended behavior [-Wimplicit-retain-self]</span><br><span class="line">    - WARN  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;Classes&#x2F;Sections&#x2F;Team&#x2F;NIMAdvancedTeamCardViewController.m:1096:1: warning: implementing deprecated method [-Wdeprecated-implementations]</span><br><span class="line">    - NOTE  | xcodebuild:  &#x2F;Applications&#x2F;Xcode.app&#x2F;Contents&#x2F;Developer&#x2F;Platforms&#x2F;iPhoneSimulator.platform&#x2F;Developer&#x2F;SDKs&#x2F;iPhoneSimulator13.2.sdk&#x2F;System&#x2F;Library&#x2F;Frameworks&#x2F;UIKit.framework&#x2F;Headers&#x2F;UIViewController.h:316:1: note: method &#39;didRotateFromInterfaceOrientation:&#39; declared here</span><br><span class="line">    - WARN  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;NIMSDK&#x2F;NIMSDK.framework&#x2F;Headers&#x2F;NIMChatManagerProtocol.h:200:12: warning: parameter &#39;NIMMessage&#39; not found in the function declaration [-Wdocumentation]</span><br><span class="line">    - NOTE  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;NIMSDK&#x2F;NIMSDK.framework&#x2F;Headers&#x2F;NIMChatManagerProtocol.h:200:12: note: did you mean &#39;messages&#39;?</span><br><span class="line">    - WARN  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;NIMSDK&#x2F;NIMSDK.framework&#x2F;Headers&#x2F;NIMChatManagerProtocol.h:210:12: warning: parameter &#39;NIMMessage&#39; not found in the function declaration [-Wdocumentation]</span><br><span class="line">    - NOTE  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;NIMSDK&#x2F;NIMSDK.framework&#x2F;Headers&#x2F;NIMChatManagerProtocol.h:210:12: note: did you mean &#39;message&#39;?</span><br><span class="line">    - WARN  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;NIMSDK&#x2F;NIMSDK.framework&#x2F;Headers&#x2F;NIMConversationManagerProtocol.h:263:12: warning: parameter &#39;session&#39; not found in the function declaration [-Wdocumentation]</span><br><span class="line">    - NOTE  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;podLibs&#x2F;TDNIMKit&#x2F;TDNIMKit&#x2F;NIMSDK&#x2F;NIMSDK.framework&#x2F;Headers&#x2F;NIMConversationManagerProtocol.h:263:12: note: did you mean &#39;notify&#39;?</span><br><span class="line">    - NOTE  | [iOS] xcodebuild:  ld: warning: instance method &#39;nim_drawImageWithSize:&#39; in category from &#x2F;Users&#x2F;wangjiji&#x2F;Library&#x2F;Developer&#x2F;Xcode&#x2F;DerivedData&#x2F;App-gjkqwvanivaxhccdvgxqguipgjmq&#x2F;Build&#x2F;Intermediates.noindex&#x2F;Pods.build&#x2F;Release-iphonesimulator&#x2F;TDNIMKit.build&#x2F;Objects-normal&#x2F;x86_64&#x2F;UIImage+NIMKit.o conflicts with same method from another category</span><br><span class="line">    - NOTE  | [iOS] xcodebuild:  ld: warning: instance method &#39;nim_drawImageWithSize:&#39; in category from &#x2F;Users&#x2F;wangjiji&#x2F;Library&#x2F;Developer&#x2F;Xcode&#x2F;DerivedData&#x2F;App-gjkqwvanivaxhccdvgxqguipgjmq&#x2F;Build&#x2F;Intermediates.noindex&#x2F;Pods.build&#x2F;Release-iphonesimulator&#x2F;TDNIMKit.build&#x2F;Objects-normal&#x2F;i386&#x2F;UIImage+NIMKit.o conflicts with same method from another category</span><br><span class="line">    - ERROR | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Library&#x2F;Developer&#x2F;Xcode&#x2F;DerivedData&#x2F;App-gjkqwvanivaxhccdvgxqguipgjmq&#x2F;Build&#x2F;Products&#x2F;Release-iphonesimulator&#x2F;TDNIMKit&#x2F;TDNIMKit.framework&#x2F;Headers&#x2F;NIMKitDependency.h:22:9: error: include of non-modular header inside framework module &#39;TDNIMKit.NIMKitDependency&#39;: &#39;&#x2F;Users&#x2F;wangjiji&#x2F;Library&#x2F;Developer&#x2F;Xcode&#x2F;DerivedData&#x2F;App-gjkqwvanivaxhccdvgxqguipgjmq&#x2F;Build&#x2F;Products&#x2F;Release-iphonesimulator&#x2F;SDWebImage&#x2F;SDWebImage.framework&#x2F;Headers&#x2F;SDWebImageCompat.h&#39; [-Werror,-Wnon-modular-include-in-framework-module]</span><br><span class="line">    - ERROR | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Library&#x2F;Developer&#x2F;Xcode&#x2F;DerivedData&#x2F;App-gjkqwvanivaxhccdvgxqguipgjmq&#x2F;Build&#x2F;Products&#x2F;Release-iphonesimulator&#x2F;TDNIMKit&#x2F;TDNIMKit.framework&#x2F;Headers&#x2F;NIMKitDependency.h:29:9: error: include of non-modular header inside framework module &#39;TDNIMKit.NIMKitDependency&#39;: &#39;&#x2F;Users&#x2F;wangjiji&#x2F;Library&#x2F;Developer&#x2F;Xcode&#x2F;DerivedData&#x2F;App-gjkqwvanivaxhccdvgxqguipgjmq&#x2F;Build&#x2F;Products&#x2F;Release-iphonesimulator&#x2F;SDWebImage&#x2F;SDWebImage.framework&#x2F;Headers&#x2F;SDWebImageManager.h&#39; [-Werror,-Wnon-modular-include-in-framework-module]</span><br><span class="line">    - ERROR | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Library&#x2F;Developer&#x2F;Xcode&#x2F;DerivedData&#x2F;App-gjkqwvanivaxhccdvgxqguipgjmq&#x2F;Build&#x2F;Products&#x2F;Release-iphonesimulator&#x2F;TDNIMKit&#x2F;TDNIMKit.framework&#x2F;Headers&#x2F;NIMKitDependency.h:30:9: error: include of non-modular header inside framework module &#39;TDNIMKit.NIMKitDependency&#39;: &#39;&#x2F;Users&#x2F;wangjiji&#x2F;Library&#x2F;Developer&#x2F;Xcode&#x2F;DerivedData&#x2F;App-gjkqwvanivaxhccdvgxqguipgjmq&#x2F;Build&#x2F;Products&#x2F;Release-iphonesimulator&#x2F;SDWebImage&#x2F;SDWebImage.framework&#x2F;Headers&#x2F;UIView+WebCacheOperation.h&#39; [-Werror,-Wnon-modular-include-in-framework-module]</span><br><span class="line">    - ERROR | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Library&#x2F;Developer&#x2F;Xcode&#x2F;DerivedData&#x2F;App-gjkqwvanivaxhccdvgxqguipgjmq&#x2F;Build&#x2F;Products&#x2F;Release-iphonesimulator&#x2F;TDNIMKit&#x2F;TDNIMKit.framework&#x2F;Headers&#x2F;NIMKitDependency.h:31:9: error: include of non-modular header inside framework module &#39;TDNIMKit.NIMKitDependency&#39;: &#39;&#x2F;Users&#x2F;wangjiji&#x2F;Library&#x2F;Developer&#x2F;Xcode&#x2F;DerivedData&#x2F;App-gjkqwvanivaxhccdvgxqguipgjmq&#x2F;Build&#x2F;Products&#x2F;Release-iphonesimulator&#x2F;SDWebImage&#x2F;SDWebImage.framework&#x2F;Headers&#x2F;UIView+WebCache.h&#39; [-Werror,-Wnon-modular-include-in-framework-module]</span><br><span class="line">    - ERROR | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Library&#x2F;Developer&#x2F;Xcode&#x2F;DerivedData&#x2F;App-gjkqwvanivaxhccdvgxqguipgjmq&#x2F;Build&#x2F;Products&#x2F;Release-iphonesimulator&#x2F;TDNIMKit&#x2F;TDNIMKit.framework&#x2F;Headers&#x2F;NIMKitDependency.h:38:9: error: include of non-modular header inside framework module &#39;TDNIMKit.NIMKitDependency&#39;: &#39;&#x2F;Users&#x2F;wangjiji&#x2F;Library&#x2F;Developer&#x2F;Xcode&#x2F;DerivedData&#x2F;App-gjkqwvanivaxhccdvgxqguipgjmq&#x2F;Build&#x2F;Products&#x2F;Release-iphonesimulator&#x2F;Toast&#x2F;Toast.framework&#x2F;Headers&#x2F;UIView+Toast.h&#39; [-Werror,-Wnon-modular-include-in-framework-module]</span><br><span class="line">    - ERROR | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Library&#x2F;Developer&#x2F;Xcode&#x2F;DerivedData&#x2F;App-gjkqwvanivaxhccdvgxqguipgjmq&#x2F;Build&#x2F;Products&#x2F;Release-iphonesimulator&#x2F;TDNIMKit&#x2F;TDNIMKit.framework&#x2F;Headers&#x2F;NIMKitKeyboardInfo.h:11:1: error: duplicate interface definition for class &#39;NIMKitKeyboardInfo&#39;</span><br><span class="line">    - NOTE  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Library&#x2F;Developer&#x2F;Xcode&#x2F;DerivedData&#x2F;App-gjkqwvanivaxhccdvgxqguipgjmq&#x2F;Build&#x2F;Products&#x2F;Release-iphonesimulator&#x2F;TDNIMKit&#x2F;TDNIMKit.framework&#x2F;Headers&#x2F;NIMKitKeyboard.h:11:12: note: previous definition is here</span><br><span class="line">    - ERROR | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Library&#x2F;Developer&#x2F;Xcode&#x2F;DerivedData&#x2F;App-gjkqwvanivaxhccdvgxqguipgjmq&#x2F;Build&#x2F;Products&#x2F;Release-iphonesimulator&#x2F;TDNIMKit&#x2F;TDNIMKit.framework&#x2F;Headers&#x2F;NIMKitKeyboardInfo.h:14:47: error: property has a previous declaration</span><br><span class="line">    - NOTE  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Library&#x2F;Developer&#x2F;Xcode&#x2F;DerivedData&#x2F;App-gjkqwvanivaxhccdvgxqguipgjmq&#x2F;Build&#x2F;Products&#x2F;Release-iphonesimulator&#x2F;TDNIMKit&#x2F;TDNIMKit.framework&#x2F;Headers&#x2F;NIMKitKeyboard.h:14:47: note: property declared here</span><br><span class="line">    - ERROR | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Library&#x2F;Developer&#x2F;Xcode&#x2F;DerivedData&#x2F;App-gjkqwvanivaxhccdvgxqguipgjmq&#x2F;Build&#x2F;Products&#x2F;Release-iphonesimulator&#x2F;TDNIMKit&#x2F;TDNIMKit.framework&#x2F;Headers&#x2F;NIMKitKeyboardInfo.h:17:47: error: property has a previous declaration</span><br><span class="line">    - NOTE  | xcodebuild:  &#x2F;Users&#x2F;wangjiji&#x2F;Library&#x2F;Developer&#x2F;Xcode&#x2F;DerivedData&#x2F;App-gjkqwvanivaxhccdvgxqguipgjmq&#x2F;Build&#x2F;Products&#x2F;Release-iphonesimulator&#x2F;TDNIMKit&#x2F;TDNIMKit.framework&#x2F;Headers&#x2F;NIMKitKeyboard.h:17:47: note: property declared here</span><br><span class="line">    - NOTE  | xcodebuild:  &#x2F;var&#x2F;folders&#x2F;sj&#x2F;46yckf194p37wvdhmfh0j2_m0000gn&#x2F;T&#x2F;CocoaPods-Lint-20191119-1941-1d76rqs-TDNIMKit&#x2F;App&#x2F;main.m:3:9: fatal error: could not build module &#39;TDNIMKit&#39;</span><br><span class="line">    - NOTE  | [iOS] xcodebuild:  warning: Skipping code signing because the target does not have an Info.plist file and one is not being generated automatically. (in target &#39;App&#39; from project &#39;App&#39;)</span><br><span class="line"></span><br><span class="line">[!] TDNIMKit did not pass validation, due to 9 errors and 36 warnings.</span><br><span class="line">You can use the &#96;--no-clean&#96; option to inspect any issue.</span><br></pre></td></tr></table></figure>
+<p><img src="https://upload-images.jianshu.io/upload_images/1663049-62908956bcf0edae.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="卧槽，无情"><br>咋肥事？？错误更多了！我配置好证书，build工程居然是可以的。那就是我验证文件的姿势有问题！原来是我们依赖了.a文件，不影响使用但是验证需要指明。验证时候需要 <code>--use-libraries</code>,并且忽略警告<br> <code>pod lib lint --use-libraries --allow-warnings</code><br> 嘿嘿嘿，<code>TDNIMKit passed validation.</code>这次果然ok了。这只是说明我们本地的podspec是校验通过了的，还需要验证远程podsepec校验。<br>5. 将修改好的模板工程上传到github托管</p>
+<ul>
+<li><p>先创建空仓库</p>
+</li>
+<li><p>然后代码提交到仓库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;# TDNIMKit&quot; &gt;&gt; README.md</span><br><span class="line">git init</span><br><span class="line">git add README.md</span><br><span class="line">git commit -m &quot;first commit&quot;</span><br><span class="line">git remote add origin git@github.com:strivever&#x2F;TDNIMKit.git</span><br><span class="line">git push -u origin master</span><br></pre></td></tr></table></figure></li>
+<li><p>打上tag，需要跟podspec文件中指定的tag一致 默认这里没有问题。将podsepec中的 source填入仓库地址<br>上传到仓库记得看一下远程仓库资源是否被同步上去了，不然一会校验会出现资源匹配不到。</p>
+</li>
+<li><p>远程仓库验证<br><code>pod spec lint --use-libraries --allow-warnings</code>验证可能很漫长，可以增加 –verbose查看日志</p>
+</li>
+</ul>
+<p>居然有报错<code>RPC failed; curl 18 transfer closed with outstanding read data remaining</code><br>solution.1 将source换成ssh地址试一下<br>solution.2 git config http.postBuffer 524288000</p>
+<p>然后校验通过了 GOOD！<br>###4. 发布私有库，关联到 TDNIMKitSpec文件<br> <code>pod repo push TDNIMKitSpec  TDNIMKit.podspec  --use-libraries --allow-warnings  --verbose</code>推送成功</p>
+<p>pod命令 <code>pod repo push 【本地spec文件夹名称】【需要发布的.podspec文件】--use-libraries --allow-warnings  --verbose</code></p>
+<p>发生错误:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> $ &#x2F;usr&#x2F;local&#x2F;bin&#x2F;git -C &#x2F;Users&#x2F;wangjiji&#x2F;.cocoapods&#x2F;repos&#x2F;TDNIMKitSpec pull</span><br><span class="line">  Your configuration specifies to merge with the ref &#39;refs&#x2F;heads&#x2F;master&#39;</span><br><span class="line">  from the remote, but no such ref was fetched.</span><br><span class="line">[!] &#x2F;usr&#x2F;local&#x2F;bin&#x2F;git -C &#x2F;Users&#x2F;wangjiji&#x2F;.cocoapods&#x2F;repos&#x2F;TDNIMKitSpec pull</span><br><span class="line"></span><br><span class="line">Your configuration specifies to merge with the ref &#39;refs&#x2F;heads&#x2F;master&#39;</span><br><span class="line">from the remote, but no such ref was fetched.</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>solution:因为我们的spec索引库为空的，是不允许我们提交的，此时添加<code>README.md</code>文件，并提交到仓库。也可以创建索引库时候勾上自动创建<code>README.md</code>文件</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">touch README.md</span><br><span class="line">git add README.md </span><br><span class="line">git commit -m &#39;first commit&#39;</span><br><span class="line">git push origin master</span><br></pre></td></tr></table></figure>
+<p>然后再回到模板工程推一遍即可，此时成功啦！<img src="https://upload-images.jianshu.io/upload_images/1663049-236e9109a9c62b3c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/240" alt="发布私有库成功"><br>查看一下本地和远程应该都有了podspec<br>#####5.测试一下<br> 打开一个cocoapods管理的项目，添加该私有库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">source &#39;https:&#x2F;&#x2F;github.com&#x2F;CocoaPods&#x2F;Specs.git&#39;</span><br><span class="line">source &#39;git@github.com:strivever&#x2F;TDNIMKitSpec.git&#39;</span><br><span class="line">platform :ios,&#39;8.0&#39;</span><br><span class="line">workspace &#39;BOOK&#39;</span><br><span class="line">abstract_target &#39;CommonPods&#39; do</span><br><span class="line">pod &#39;YYKit&#39;, &#39;~&gt; 1.0.9&#39;</span><br><span class="line">pod &#39;TDNIMKit&#39;, &#39;0.1.0&#39;</span><br><span class="line">  target &#39;GCYSColledge&#39; do</span><br><span class="line">    project &#39;GCYSColledge&#x2F;GCYSColledge.xcodeproj&#39;</span><br><span class="line">  end</span><br><span class="line">  </span><br><span class="line">  target &#39;BOOK&#39; do</span><br><span class="line">    project &#39;BOOK.xcodeproj&#39;</span><br><span class="line">  end</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<p>跟其它三方没啥区别，只是需要指定私有Spec源，<code>pod install --repo-update --verbose</code>等待安装：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">StriVever@StrivEver ~ ±master⚡ » cd &#x2F;Users&#x2F;wangjiji&#x2F;Desktop&#x2F;BOOK           1 ↵</span><br><span class="line">StriVever@StrivEver ~&#x2F;Desktop&#x2F;BOOK ±master⚡ » pod install --repo-update --verbose</span><br><span class="line">  Preparing</span><br><span class="line"></span><br><span class="line">Updating local specs repositories</span><br><span class="line">  CDN: trunk Relative path: CocoaPods-version.yml exists! Returning local</span><br><span class="line">  because checking is only perfomed in repo update</span><br><span class="line"></span><br><span class="line">Updating spec repo &#96;master&#96;</span><br><span class="line">  $ &#x2F;usr&#x2F;local&#x2F;bin&#x2F;git -C &#x2F;Users&#x2F;wangjiji&#x2F;.cocoapods&#x2F;repos&#x2F;master fetch origin</span><br><span class="line">  --progress</span><br></pre></td></tr></table></figure>
+
+
+<p>###6.我们发现pod install 私有库之后，所有的源码文件全部在一个文件夹里。如果需要文件夹嵌套需要使用 subspec方式实现子文件夹嵌套：效果如下图：<br><img src="https://upload-images.jianshu.io/upload_images/1663049-6020235867a20972.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="文件夹嵌套"><br>如下这种形式，注意当子文件夹里需要依赖其他文件夹，需要指明 dependency 不然会报错，找不到.h文件。这个路径也是相对路径，路径到依赖文件所在文件夹即可，说明你需要依赖其中一个子模块。我的理解subspec其实是独立功能的子模块，不是单单为了放入文件夹中管理，这些子模块也可以被独立集成进项目中，所以需要指明依赖<code>cacheHelper.dependency  &#39;TDNetworkKit/TDNetworkConfiguration&#39;</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">s.subspec &#39;TDCacheHelper&#39;do |cacheHelper|</span><br><span class="line">   cacheHelper.source_files &#x3D; &#39;TDNetworkKit&#x2F;Classes&#x2F;TDCacheHelper&#x2F;*.&#123;h,m&#125;&#39;</span><br><span class="line">    cacheHelper.public_header_files &#x3D; &quot;TDNetworkKit&#x2F;Classes&#x2F;TDCacheHelper&#x2F;*.h&quot;</span><br><span class="line">    cacheHelper.dependency  &#39;TDNetworkKit&#x2F;TDNetworkConfiguration&#39;</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<p>###7.编辑我们的README.md小尾巴<br>如下图：<img src="https://upload-images.jianshu.io/upload_images/1663049-b80bc13e9af5b1c3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="README小尾巴"><br>对应代码,#代表跳转链接，这个链接只能是该仓库内部链接，我没有写</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># TDNetworkKit</span><br><span class="line">[![CI Status](https:&#x2F;&#x2F;img.shields.io&#x2F;badge&#x2F;build-pass-orange.svg)](#)</span><br><span class="line">[![Version](https:&#x2F;&#x2F;img.shields.io&#x2F;badge&#x2F;Version-0.1.0-blue.svg)](#)</span><br><span class="line">[![License](https:&#x2F;&#x2F;img.shields.io&#x2F;badge&#x2F;License-MIT-yellow.svg)](#)</span><br><span class="line">[![Platform](https:&#x2F;&#x2F;img.shields.io&#x2F;badge&#x2F;Platform-iOS8.0-red.svg)](#)</span><br></pre></td></tr></table></figure>
+<p> 图标文字和颜色格式都是可以设置的：<br><code>https://img.shields.io/badge/build-pass-orange.svg</code><br><code>https://img.shields.io/badge/【前半部分文字】-【后半部分文字】-【颜色，英文，16进制都行】.svg</code></p>
+<p> <a href="https://github.com/strivever/TDNIMKit.git" target="_blank" rel="noopener">demo点这里</a></p>
+<p>参考：<br><a href="https://juejin.im/post/5c796afbf265da2db3056c85" target="_blank" rel="noopener">https://juejin.im/post/5c796afbf265da2db3056c85</a></p>
+<p><a href="https://juejin.im/post/5ba8e3c95188255c581aacbd" target="_blank" rel="noopener">https://juejin.im/post/5ba8e3c95188255c581aacbd</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS%E9%9A%8F%E7%AC%94/" rel="tag"># iOS随笔</a>
+          
+            <a href="/tags/%E6%8A%80%E6%9C%AF/" rel="tag"># 技术</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/01/19/%E5%8E%9F%E7%94%9F%E4%B8%8EWKWebView%E4%BA%A4%E4%BA%92%E6%9B%B4%E7%AE%80%E5%8D%95/" rel="next" title="原生与WKWebView交互更简单">
+                <i class="fa fa-chevron-left"></i> 原生与WKWebView交互更简单
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.JPG"
+                alt="Sea" />
+            
+              <p class="site-author-name" itemprop="name">Sea</p>
+              <p class="site-description motion-element" itemprop="description">时刻保持一颗学习的心</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/strivever" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="458362366@qq.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-QQ邮箱"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.jianshu.com/u/5c2e26f75d6a" target="_blank" title="简书">
+                      
+                        <i class="fa fa-fw fa-简书"></i>简书</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#开始跟着我创建私有库吧"><span class="nav-number">1.1.</span> <span class="nav-text">开始跟着我创建私有库吧</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-创建podspec文件"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.创建podspec文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-制作我们的pod库"><span class="nav-number">1.1.2.</span> <span class="nav-text">2.制作我们的pod库</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sea</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("DdGdBFc3nzVKhFuFjbtxsAIp-gzGzoHsz", "2asTn7klQFoPJyvvuLsmy8D5");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
